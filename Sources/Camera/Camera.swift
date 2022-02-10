@@ -7,15 +7,15 @@ public struct Camera {
     public static var shared = Camera()
     private var interactor: CameraInteractor = .shared
     
-    func takePicture() -> Single<Capture?>? {
+    public func takePicture() -> Single<Capture?>? {
         return interactor.takePicture()
     }
     
-    func getCameraState() -> Single<State?>? {
+    public func getCameraState() -> Single<State?>? {
         return interactor.getCameraState()
     }
     
-    func setImageCaptureMode() -> Completable{
+    public func setImageCaptureMode() -> Completable{
         return interactor.setImageCaptureMode()
     }
     

@@ -7,4 +7,4 @@
 
 import Foundation
 
-protocol CameraResponse{}
+public protocol CameraResponse{}

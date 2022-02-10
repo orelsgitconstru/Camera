@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct State: CameraResponse{
+public struct State: CameraResponse{
     let sessionId: String?
     let batteryLevel: Int?
     let storageChanged: Bool?

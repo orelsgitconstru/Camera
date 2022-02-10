@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Capture: CameraResponse{
+public struct Capture: CameraResponse{
     var name: String?
     var state: String?
     var id: String?
