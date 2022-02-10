@@ -6,3 +6,6 @@
 //
 
 import Foundation
+struct SetModeError: Error{
+    let message = "Setting mode failed"
+}
