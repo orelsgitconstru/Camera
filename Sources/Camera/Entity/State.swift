@@ -9,14 +9,14 @@ import Foundation
 
 public struct State: CameraResponse{
     let sessionId: String?
-    let batteryLevel: Int?
+    let batteryLevel: Double?
     let storageChanged: Bool?
     let _captureStatus: String?
-    let _recordedTime: Int?
-    let _recordableTime: Int?
+    let _recordedTime: Int64?
+    let _recordableTime: Int64?
     let _compositeShootingElapsedTime: Int?
     let _latestFileUri: String?
     let _batteryState: String?
-    let _apiVersion: Int?
+    let _apiVersion: Int64?
     let _cameraError: [String]?
 }
