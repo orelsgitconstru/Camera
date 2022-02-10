@@ -14,7 +14,7 @@ public struct Capture: CameraResponse{
     var results: Results?
     var error: CaptureError
     
-    struct CaptureError{
+    struct CaptureError: Error{
         var message: String
         var code: String
     }
