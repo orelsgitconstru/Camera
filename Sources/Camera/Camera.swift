@@ -4,7 +4,7 @@ import RxSwift
 
 public struct Camera {
     
-    static var shared = Camera()
+    public static var shared = Camera()
     private var interactor: CameraInteractor = .shared
     
     func takePicture() -> Single<Capture?>? {
