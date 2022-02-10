@@ -140,7 +140,8 @@ struct CameraInteractor{
                                 return "192.168.1.1"
                             }
                             else {
-                                return String(cString: inet_ntoa(si.sin_addr), encoding: .ascii) ?? "192.168.1.1"
+//                                return String(cString: inet_ntoa(si.sin_addr), encoding: .ascii) ?? "192.168.1.1"
+                                return "192.168.1.1"
                             }
                         }
                         
