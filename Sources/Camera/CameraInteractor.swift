@@ -18,12 +18,12 @@ struct CameraInteractor{
         return Disposables.create()
     }
     
-    func takePicture() -> Single<Capture?>? {
-        return cameraManager.takePicture() as? Single<Capture?> ?? nil
+    func takePicture() -> Single<CameraResponse?> {
+        return cameraManager.takePicture()
     }
     
-    func getCameraState() -> Single<State?>? {
-        return cameraManager.getCameraState() as? Single<State?> ?? nil
+    func getCameraState() -> Single<CameraResponse?> {
+        return cameraManager.getCameraState()
     }
     
     func setImageCaptureMode() -> Completable{

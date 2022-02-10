@@ -7,11 +7,11 @@ public struct Camera {
     public static var shared = Camera()
     private var interactor: CameraInteractor = .shared
     
-    public func takePicture() -> Single<Capture?>? {
+    public func takePicture() -> Single<CameraResponse?> {
         return interactor.takePicture()
     }
     
-    public func getCameraState() -> Single<State?>? {
+    public func getCameraState() -> Single<CameraResponse?> {
         return interactor.getCameraState()
     }
     
