@@ -14,7 +14,7 @@ public struct State: CameraResponse{
     let _captureStatus: String?
     let _recordedTime: Int64?
     let _recordableTime: Int64?
-    let _compositeShootingElapsedTime: Int?
+    let _compositeShootingElapsedTime: Int64?
     let _latestFileUri: String?
     let _batteryState: String?
     let _apiVersion: Int64?
