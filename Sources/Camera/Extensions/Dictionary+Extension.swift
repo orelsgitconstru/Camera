@@ -13,6 +13,7 @@ extension Dictionary where Key == String{
     }
     
     func toCapture() -> Capture{
-        return Capture(name: self["name"] as? String, state: self["state"] as? String, id: self["id"] as? String, results: Capture.Results(data: self["results"] as? [String : Any]))
+        let error = self["error"] as? [String:String] ?? ["": ""]
+        return Capture(name: self["name"] as? String, state: self["state"] as? String, id: self["id"] as? String, results: Capture.Results(data: self["results"] as? [String : Any]), error: Capture.CaptureError(message: error["message"] ?? "", code: error["code"] ?? ""))
     }
 }

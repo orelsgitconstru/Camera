@@ -12,8 +12,12 @@ public struct Capture: CameraResponse{
     var state: String?
     var id: String?
     var results: Results?
+    var error: CaptureError
     
-    
+    struct CaptureError{
+        var message: String
+        var code: String
+    }
     
     struct Results{
         var options: Options?

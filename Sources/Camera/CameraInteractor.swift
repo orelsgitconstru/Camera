@@ -18,11 +18,11 @@ struct CameraInteractor{
         return Disposables.create()
     }
     
-    func takePicture() -> Single<CameraResponse?> {
+    func takePicture() -> Single<State?> {
         return cameraManager.takePicture()
     }
     
-    func getCameraState() -> Single<CameraResponse?> {
+    func getCameraState() -> Single<Capture?> {
         return cameraManager.getCameraState()
     }
     
@@ -34,6 +34,7 @@ struct CameraInteractor{
     internal struct CameraManager{
         
         static let shared = CameraManager()
+        let currentState: State? = nil
         
         private let RTAX_DST = 0    /* destination sockaddr present */
         private let RTAX_GATEWAY = 1    /* gateway sockaddr present */
@@ -140,7 +141,7 @@ struct CameraInteractor{
                                 return "192.168.1.1"
                             }
                             else {
-//                                return String(cString: inet_ntoa(si.sin_addr), encoding: .ascii) ?? "192.168.1.1"
+                                //                                return String(cString: inet_ntoa(si.sin_addr), encoding: .ascii) ?? "192.168.1.1"
                                 return "192.168.1.1"
                             }
                         }
@@ -157,7 +158,7 @@ struct CameraInteractor{
         }
         
         
-        func getCameraState() -> Single<CameraResponse?>{
+        func getCameraState() -> Single<Capture?>{
             return performRequest(with: CameraAPI.URL.getState){ res in
                 if let resJSON = res as? [String:Any] {
                     if let stateJSON = resJSON["state"] as? [String:Any]{
@@ -169,13 +170,12 @@ struct CameraInteractor{
         }
         
         func setImageCaptureMode() -> Completable{
-            Completable.create{observer in
-                performRequest(with: CameraAPI.URL.setMode, body:CameraAPI.Body.SET_IMAGE_CAPTURE_BODY).subscribe(onSuccess: {_ in observer(.completed)}, onFailure: {error in observer(.error(error))}, onDisposed: {})
-            }
+            return performRequest(with: CameraAPI.URL.setMode, body: CameraAPI.Body.SET_IMAGE_CAPTURE_BODY)
         }
         
-        func takePicture() -> Single<CameraResponse?>{
-            return performRequest(with: CameraAPI.URL.takePhoto, body: CameraAPI.Body.TAKE_PICTURE_BODY){ res in
+        func takePicture() -> Single<State?>{
+            if(currentState?._captureStatus == ""){}
+            return performRequest(with: CameraAPI.URL.takeImage, body: CameraAPI.Body.TAKE_PICTURE_BODY){ res in
                 if let resJSON = res as? [String:Any] {
                     return resJSON.toCapture()
                 }
@@ -183,7 +183,7 @@ struct CameraInteractor{
             }
         }
         
-        private func performRequest(with path: String, body: Any = ["":""], toCameraResponse:  @escaping (_ result: Any?) -> CameraResponse? = {_ in return nil}) -> Single<CameraResponse?>{
+        private func performRequest<T: CameraResponse>(with path: String, body: Any = ["":""], toCameraResponse:  @escaping (_ result: Any?) -> CameraResponse?) -> Single<T?>{
             let url = "http://\(defaultGateway)\(path)"
             return Single.create{ observer in
                 if let urlObject = URL(string :url){
@@ -199,7 +199,28 @@ struct CameraInteractor{
                         }
                         let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
                         let convertedResult = toCameraResponse(responseJSON)
-                        observer(.success(convertedResult))
+                        observer(.success(convertedResult as? T))
+                    }.resume()
+                }
+                return Disposables.create()
+            }
+        }
+        
+        private func performRequest(with path: String, body: Any = ["":""]) -> Completable{
+            let url = "http://\(defaultGateway)\(path)"
+            return Completable.create{ observer in
+                if let urlObject = URL(string :url){
+                    var urlRequest = URLRequest(url: urlObject)
+                    let jsonBody = try? JSONSerialization.data(withJSONObject: body)
+                    urlRequest.addValue("application/json; charaset=utf-8", forHTTPHeaderField: "Content-Type")
+                    urlRequest.httpMethod = "POST"
+                    urlRequest.httpBody = jsonBody
+                    URLSession.shared.dataTask(with: urlRequest) { _, _, error in
+                        if(error != nil) {
+                            observer(.error(error!))
+                        } else {
+                            observer(.completed)
+                        }
                     }.resume()
                 }
                 return Disposables.create()
@@ -211,7 +232,7 @@ struct CameraInteractor{
     
     internal struct CameraAPI{
         struct URL{
-            static let takePhoto = "/osc/commands/execute"
+            static let takeImage = "/osc/commands/execute"
             static let setMode = "/osc/commands/execute"
             static let getMode = "/osc/commands/execute"
             static let getState = "/osc/state"
