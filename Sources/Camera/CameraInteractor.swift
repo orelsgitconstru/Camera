@@ -200,7 +200,7 @@ struct CameraInteractor{
                         let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
                         let convertedResult = toCameraResponse(responseJSON)
                         observer(.success(convertedResult))
-                    }
+                    }.resume()
                 }
                 return Disposables.create()
             }
